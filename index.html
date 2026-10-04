@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0a0b">
+<title>P² Collective — Price List</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+<script>
+  // Embed mode (Notion & co. iframe the page into a fixed-height scroll
+  // box): collapse the hero before first paint.
+  (function () {
+    var embedded = false;
+    try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
+    if (embedded || /[?&]embed=1(?:&|$)/.test(location.search)) {
+      document.documentElement.classList.add('embed');
+    }
+  })();
+</script>
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --surface: #141416;
+    --surface-2: #1c1c1f;
+    --border: #2b2925;
+    --text: #f3efe6;
+    --muted: #a89f8f;
+    --gold: #e9b530;
+    --gold-bright: #fec620;
+    --font-display: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+  a { color: var(--gold); }
+  a:hover { color: var(--gold-bright); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .skip {
+    position: absolute; left: 16px; top: -100px; z-index: 50;
+    background: var(--gold-bright); color: #0a0a0b; padding: 8px 14px;
+    border-radius: 6px; font-weight: 600; text-decoration: none;
+  }
+  .skip:focus { top: 16px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    background: var(--bg);
+    isolation: isolate;
+  }
+  /* Film grain over the shader: the liquid gold reads as metal, not as a
+     smooth gradient. Pure CSS (SVG turbulence), so it costs nothing. */
+  .hero::after {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    opacity: .14; mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  /* A hairline of light along the hero's bottom edge, with a slow sheen
+     passing through it — the one ornament the sheet allows itself. */
+  .hero-rule {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 1px; z-index: 2;
+    background: linear-gradient(90deg, transparent 0%, rgba(233,181,48,.55) 25%, #fdf181 50%, rgba(233,181,48,.55) 75%, transparent 100%);
+    background-size: 200% 100%;
+    animation: rule-sheen 6s linear infinite;
+  }
+  @keyframes rule-sheen { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  html.gl-off .hero {
+    background: radial-gradient(120% 80% at 20% 0%, #3a2408 0%, #0a0a0b 60%);
+  }
+  #hero-gl {
+    position: absolute; inset: 0; z-index: 0;
+    width: 100%; height: 100%; display: block;
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    height: 100%; max-width: 1080px; margin: 0 auto; padding: 0 24px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero-logo {
+    display: block;
+    width: min(360px, 62vw);
+    height: auto;
+    margin-left: -4px; /* optical: the P's edge sits flush with the text column */
+  }
+  /* The WebGL pass paints the foil logo itself; keep the <img> for layout + AT. */
+  html.gl-on .hero-logo { opacity: 0; }
+  .eyebrow {
+    font-family: var(--font-display); font-weight: 500;
+    text-transform: uppercase; letter-spacing: .12em; font-size: 12px;
+    color: var(--gold); margin: 20px 0 4px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before {
+    content: ""; width: 8px; height: 8px; flex: none; transform: rotate(45deg); border-radius: 1px;
+    background: linear-gradient(135deg, #8d4c1a 0%, #c07028 30%, #f09818 60%, #fec620 85%, #fdf181 100%);
+  }
+  .effective { color: var(--muted); font-size: 14px; margin: 0; font-weight: 400; }
+  .print-btn {
+    position: absolute; right: 24px; top: 22px;
+    appearance: none; background: rgba(10,10,11,.55); color: var(--text);
+    border: 1px solid var(--border); border-radius: 999px;
+    font: 500 12px/1 var(--font-display); letter-spacing: .12em; text-transform: uppercase;
+    padding: 9px 14px; cursor: pointer; backdrop-filter: blur(4px);
+    transition: border-color .15s, color .15s;
+  }
+  .print-btn:hover { border-color: var(--gold); color: var(--gold-bright); }
+
+  html.embed .hero { height: 120px; }
+  html.embed .hero-logo { width: min(220px, 48vw); }
+  html.embed .eyebrow, html.embed .print-btn { display: none; }
+  html.embed .effective { margin-top: 8px; font-size: 12px; }
+
+  /* ---------- Group navigation (sticky) ---------- */
+  .groupnav {
+    position: sticky; top: 0; z-index: 4;
+    background: rgba(10,10,11,.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .groupnav:empty { display: none; }
+  .groupnav-inner {
+    max-width: 1080px; margin: 0 auto; padding: 0 24px;
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .groupnav-inner::-webkit-scrollbar { display: none; }
+  .gchip {
+    flex: none; display: inline-flex; align-items: center; height: 44px; padding: 0 2px;
+    font: 500 11px/1 var(--font-display); letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none; margin-right: 14px;
+    border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+  }
+  .gchip:hover { color: var(--text); }
+  .gchip[aria-current="true"] { color: var(--gold-bright); border-bottom-color: var(--gold); }
+  .group:focus { outline: none; }
+  /* --nav-h is the measured strip height (set by the script); the static
+     fallback only matters before the first measurement. */
+  html.has-nav thead th { top: var(--nav-h, 44px); }
+
+  /* ---------- Sheet ---------- */
+  main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 48px; }
+  html.embed main { padding-top: 20px; }
+  .group { margin: 0 0 44px; }
+  /* Groups rise into view as you reach them (only once the script has
+     confirmed IntersectionObserver exists — never hidden without it). */
+  html.js-reveal .group { opacity: 0; transform: translateY(14px); transition: opacity .55s ease-out, transform .55s ease-out; }
+  html.js-reveal .group.in { opacity: 1; transform: none; }
+  .group-head {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 16px;
+    margin: 0 0 12px; padding-bottom: 10px;
+    position: relative;
+  }
+  /* Gradient hairline under each group: gold at the title, fading right. */
+  .group-head::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, rgba(233,181,48,.7) 0%, rgba(233,181,48,.25) 35%, var(--border) 70%, transparent 100%);
+  }
+  .group h2 {
+    font-family: var(--font-display); font-weight: 500;
+    text-transform: uppercase; letter-spacing: .14em; font-size: 16px;
+    margin: 0; display: inline-flex; align-items: center; gap: 12px;
+  }
+  .group h2::before {
+    content: ""; width: 10px; height: 10px; flex: none;
+    background: linear-gradient(135deg, #8d4c1a 0%, #c07028 30%, #f09818 60%, #fec620 85%, #fdf181 100%);
+    transform: rotate(45deg); border-radius: 1px;
+  }
+  /* Foil text: the group name carries the logo's gradient. */
+  .group h2 .foil {
+    background: linear-gradient(100deg, #fdf181 0%, #fec620 35%, #e9b530 60%, #c07028 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+  }
+  .group .note { color: var(--muted); font-size: 13px; font-weight: 300; }
+
+  table { width: 100%; border-collapse: separate; border-spacing: 0; }
+  thead th {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--bg);
+    font-family: var(--font-display); font-weight: 500;
+    text-transform: uppercase; letter-spacing: .12em; font-size: 11px;
+    color: var(--muted); text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  th.num, td.num { text-align: right; }
+  tbody tr:nth-child(odd) { background-color: var(--surface); }
+  tbody tr:nth-child(even) { background-color: var(--surface-2); }
+  tbody tr {
+    background-size: 300% 100%; background-repeat: no-repeat; background-position: 200% 0;
+  }
+  @keyframes sheen { from { background-position: 200% 0; } to { background-position: -100% 0; } }
+  tbody tr:hover, tbody tr:focus-within {
+    background-image: linear-gradient(110deg, transparent 40%, rgba(254,198,32,.10) 50%, transparent 60%);
+    animation: sheen 1.4s linear infinite;
+  }
+  tbody th, tbody td {
+    padding: 12px; vertical-align: middle; text-align: left; font-weight: 400;
+    border-bottom: 1px solid rgba(43,41,37,.6);
+  }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+  tbody th.spec { font-weight: 500; font-size: 14px; }
+  .spec-inner { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; }
+  td.price { font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+  td.price.muted { color: var(--muted); font-weight: 400; }
+  /* The best price on the row (a volume tier that beats the single kit) is
+     the number a buyer is looking for: gold, a size up. */
+  td.price.best { color: var(--gold-bright); font-size: 15px; font-weight: 600; }
+  td.price .save {
+    display: inline-block; margin-left: 6px; vertical-align: 1px;
+    font: 500 10px/1.4 var(--font-display); letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  tr.oos td.price, tr.oos th.spec, tr.oos td.price.best { color: var(--muted); font-size: inherit; font-weight: 400; }
+  td.coa a { text-decoration: none; border-bottom: 1px solid rgba(233,181,48,.35); }
+  td.coa a:hover { border-bottom-color: var(--gold-bright); }
+  td.coa .none { color: var(--muted); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px 3px 8px; border-radius: 999px;
+    font-size: 12px; font-weight: 500; letter-spacing: .01em; white-space: nowrap;
+  }
+  .chip .glyph { font-size: 10px; line-height: 1; }
+  .chip-available  { color: #7fd39a; background: #12261a; }
+  .chip-production { color: #f0c94a; background: #2a2108; }
+  .chip-transit    { color: #8fc1e8; background: #0f1f2c; }
+  .chip-oos        { color: #f28b93; background: #2c1013; }
+  .status-note { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+
+  .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    border: 1px solid var(--border); color: var(--muted);
+    font: 500 10px/1.5 var(--font-display); letter-spacing: .08em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .pill-promo {
+    position: relative; overflow: hidden;
+    color: var(--gold-bright); border-color: rgba(254,198,32,.45); background: rgba(254,198,32,.08);
+  }
+  /* A slow light pass over the promo pill, nothing else on the row moves. */
+  .pill-promo::after {
+    content: ""; position: absolute; inset: -40% -60%;
+    background: linear-gradient(110deg, transparent 42%, rgba(253,241,129,.55) 50%, transparent 58%);
+    transform: translateX(-100%);
+    animation: promo-sheen 3.6s ease-in-out infinite;
+  }
+  @keyframes promo-sheen { 0%, 55% { transform: translateX(-100%); } 85%, 100% { transform: translateX(100%); } }
+
+  .empty {
+    padding: 48px 24px; text-align: center; color: var(--muted);
+    border: 1px dashed var(--border); border-radius: 12px;
+  }
+
+  footer {
+    max-width: 1080px; margin: 0 auto; padding: 24px 24px 40px;
+    color: var(--muted); font-size: 12px; letter-spacing: .02em;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+  }
+  footer .sep { margin: 0 8px; opacity: .6; }
+  footer #contact { color: var(--gold); }
+  .foot-brand {
+    font-family: var(--font-display); font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+    font-size: 12px; color: var(--muted); display: inline-flex; align-items: baseline; gap: 6px;
+  }
+  .foot-brand .p2 {
+    font-size: 15px; font-weight: 500;
+    background: linear-gradient(100deg, #fdf181 0%, #fec620 35%, #e9b530 60%, #c07028 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+  }
+
+  /* ---------- Narrow: rows become cards ---------- */
+  @media (max-width: 640px) {
+    .hero { height: 240px; }
+    html.embed .hero { height: 120px; }
+    .groupnav-inner { padding: 0 16px; }
+    .gchip { height: 42px; }
+    main { padding: 28px 16px 40px; }
+    footer { padding: 20px 16px 32px; }
+    td.price.best { font-size: 16px; }
+    tbody tr.promo { border-color: rgba(233,181,48,.45); }
+    table, tbody, tbody tr, tbody th, tbody td { display: block; width: 100%; }
+    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    tbody tr {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 6px 12px; margin-bottom: 10px;
+    }
+    tbody th, tbody td {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 7px 0; border-bottom: 1px solid rgba(43,41,37,.5); text-align: right;
+    }
+    tbody tr:last-child th, tbody tr:last-child td { border-bottom: 1px solid rgba(43,41,37,.5); }
+    tbody th:last-child, tbody td:last-child { border-bottom: 0; }
+    tbody th.spec { justify-content: flex-start; text-align: left; font-size: 15px; padding-bottom: 9px; }
+    tbody td::before {
+      content: attr(data-label);
+      font-family: var(--font-display); font-weight: 500; font-size: 10px;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-align: left;
+    }
+    .status-note { display: inline; margin: 0 0 0 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    tbody tr:hover, tbody tr:focus-within { animation: none; background-position: 50% 0; }
+    .print-btn { transition: none; }
+    .hero-rule { animation: none; background-position: 50% 0; }
+    .pill-promo::after { animation: none; display: none; }
+    html.js-reveal .group { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ---------- Print ---------- */
+  @media print {
+    html, body { background: #fff !important; color: #000 !important; }
+    #hero-gl, .print-btn, .skip, .groupnav, .hero-rule, .foot-brand { display: none !important; }
+    .hero::after { display: none; }
+    .hero { height: auto; background: none !important; border-bottom: 1px solid #000; overflow: visible; }
+    html.js-reveal .group { opacity: 1 !important; transform: none !important; }
+    .group-head::after { background: #000; }
+    .group h2 .foil, .foot-brand .p2 { background: none; color: #000; -webkit-text-fill-color: #000; }
+    td.price.best { color: #000; font-size: inherit; }
+    td.price .save { color: #444; }
+    footer { display: block; border-top: 1px solid #000; }
+    .hero-inner { padding: 12pt 0; display: block; }
+    .hero-logo { display: none; }
+    .hero-inner::before {
+      content: "P² Collective";
+      display: block; font-family: var(--font-display); font-weight: 500;
+      font-size: 22pt; letter-spacing: .12em; text-transform: uppercase; color: #000;
+    }
+    .eyebrow, .effective { color: #000; margin: 4pt 0 0; }
+    main { padding: 12pt 0; max-width: none; }
+    .group { break-inside: avoid; page-break-inside: avoid; margin-bottom: 18pt; }
+    .group-head { border-bottom-color: #000; }
+    .group h2, .group .note { color: #000; }
+    .group h2::before { background: #000; }
+    thead { display: table-header-group; }
+    thead th { position: static; background: #fff; color: #000; border-bottom: 1px solid #000; }
+    tbody tr { background: none !important; animation: none !important; }
+    tbody th, tbody td { border-bottom: 1px solid #bbb; color: #000; }
+    td.price.muted, tr.oos td.price, tr.oos th.spec, .status-note, .none { color: #444; }
+    .chip, .pill { background: none !important; color: #000 !important; border: 1px solid #000; }
+    td.coa a { color: #000; text-decoration: none; border: 0; }
+    footer { color: #000; }
+    footer #contact { color: #000; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#sheet">Skip to price list</a>
+
+<header class="hero">
+  <canvas id="hero-gl" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <img class="hero-logo" src="assets/p2-wide.png" alt="P² Collective" width="1200" height="367" decoding="async">
+    <p class="eyebrow">Price list</p>
+    <p class="effective">Effective <span data-effective></span></p>
+    <button type="button" class="print-btn" id="print-btn">Print</button>
+  </div>
+  <div class="hero-rule" aria-hidden="true"></div>
+</header>
+
+<nav class="groupnav" id="groupnav" aria-label="Product groups"></nav>
+
+<main id="sheet" aria-live="polite">
+  <noscript><p class="empty">This price list needs JavaScript to render.</p></noscript>
+</main>
+
+<footer>
+  <span>Prices in USD<span class="sep">·</span>Effective <span data-effective></span><span class="sep">·</span>Questions? <span id="contact">contact us</span></span>
+  <span class="foot-brand" aria-hidden="true"><span class="p2">P²</span>Collective</span>
+</footer>
+
+<script id="pricesheet-data" type="application/json">{"generatedAt":"2026-10-04T17:09:37.283Z","effectiveDate":"October 4, 2026, 12:09 PM CT","promoLabel":"Promo","showOutOfStock":true,"groups":[{"name":"5 AMINO 1MQ ","note":"","variants":[{"spec":"50x10 vials","status":"AVAILABLE","prices":{"q1":70,"q2":60,"q20":60},"coa":{"ref":"P250AM-1026","url":"https://accumarklabs.com/accuverify/?accuverify_code=N2PT-357N"},"promo":false,"sellable":8,"moq":0}]},{"name":"GHK-CU","note":"","variants":[{"spec":"10 vials","status":"AVAILABLE","prices":{"q1":60,"q2":60,"q20":60},"coa":{"ref":"MB5-CU100","url":"https://accumarklabs.com/accuverify/?accuverify_code=B9YV-AWM7"},"promo":false,"sellable":60,"moq":0}]},{"name":"KPV","note":"","variants":[{"spec":"10 vials","status":"AVAILABLE","prices":{"q1":115,"q2":115,"q20":115},"coa":{"ref":"KPV30-0726","url":"https://accumarklabs.com/accuverify/?accuverify_code=52NV-2ELL"},"promo":false,"sellable":93,"moq":0}]},{"name":"T10","note":"","variants":[{"spec":"10 vials","status":"AVAILABLE","prices":{"q1":50,"q2":50,"q20":50},"coa":null,"promo":false,"sellable":89,"moq":0}]}]}</script>
+
+<script>
+  // ---------- Sheet renderer (vanilla, no dependencies) ----------
+  (function () {
+    var main = document.getElementById('sheet');
+    var data;
+    try {
+      data = JSON.parse(document.getElementById('pricesheet-data').textContent);
+    } catch (e) {
+      console.error('[pricesheet] bad data island', e);
+      main.textContent = '';
+      main.appendChild(el('p', 'empty', 'The price list could not be loaded. Please try again shortly.'));
+      return;
+    }
+
+    var STATUS = {
+      'AVAILABLE':     { cls: 'chip-available',  glyph: '●', label: 'Available' },
+      'IN PRODUCTION': { cls: 'chip-production', glyph: '◐', label: 'In production' },
+      'IN TRANSIT':    { cls: 'chip-transit',    glyph: '➤', label: 'In transit' },
+      'OUT OF STOCK':  { cls: 'chip-oos',        glyph: '○', label: 'Coming soon' }
+    };
+    var COLS = ['Spec', 'Status', '1 kit', '2+ kits', '20+ kits', 'COA'];
+
+    function el(tag, cls, text) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text != null) n.textContent = text;
+      return n;
+    }
+    function fmt(n) {
+      n = Number(n);
+      if (!isFinite(n)) return '—';
+      return '$' + (Number.isInteger(n) ? String(n) : n.toFixed(2));
+    }
+    function priceCell(label, value, mutedVsQ1, best, q1) {
+      var td = el('td', 'price num' + (mutedVsQ1 ? ' muted' : '') + (best ? ' best' : ''), fmt(value));
+      td.setAttribute('data-label', label);
+      // The best tier says what it saves against a single kit.
+      if (best && isFinite(Number(q1)) && Number(q1) > 0) {
+        var pct = Math.round((1 - Number(value) / Number(q1)) * 100);
+        if (pct > 0) td.appendChild(el('span', 'save', 'save ' + pct + '%'));
+      }
+      return td;
+    }
+
+    var showOos = data.showOutOfStock !== false;
+    var promoLabel = data.promoLabel || 'Promo';
+    var groups = Array.isArray(data.groups) ? data.groups : [];
+    var shown = 0;
+    var frag = document.createDocumentFragment();
+
+    groups.forEach(function (g, gi) {
+      var variants = (g.variants || []).filter(function (v) {
+        return showOos || v.status !== 'OUT OF STOCK';
+      });
+      if (!variants.length) return;
+      shown++;
+
+      var section = el('section', 'group');
+      var head = el('div', 'group-head');
+      var h2 = el('h2');
+      h2.appendChild(el('span', 'foil', g.name));
+      h2.id = 'group-' + gi;
+      section.id = 'g-' + gi;
+      head.appendChild(h2);
+      if (g.note) head.appendChild(el('span', 'note', g.note));
+      section.appendChild(head);
+
+      var table = el('table');
+      table.setAttribute('aria-labelledby', h2.id);
+      var thead = el('thead');
+      var hr = el('tr');
+      COLS.forEach(function (c, i) {
+        var th = el('th', i >= 2 && i <= 4 ? 'num' : null, c);
+        th.setAttribute('scope', 'col');
+        hr.appendChild(th);
+      });
+      thead.appendChild(hr);
+      table.appendChild(thead);
+
+      var tbody = el('tbody');
+      variants.forEach(function (v) {
+        var st = STATUS[v.status] || STATUS['OUT OF STOCK'];
+        var oos = v.status === 'OUT OF STOCK';
+        var tr = el('tr', (oos ? 'oos' : '') + (v.promo ? ' promo' : ''));
+
+        // Spec (row header) + pills
+        var th = el('th', 'spec');
+        th.setAttribute('scope', 'row');
+        var inner = el('div', 'spec-inner');
+        inner.appendChild(el('span', null, v.spec));
+        if (v.promo) inner.appendChild(el('span', 'pill pill-promo', promoLabel));
+        if (v.moq > 1) inner.appendChild(el('span', 'pill', 'MOQ ' + v.moq));
+        th.appendChild(inner);
+        tr.appendChild(th);
+
+        // Status chip (glyph + text — never color alone)
+        var tdS = el('td', 'status');
+        tdS.setAttribute('data-label', 'Status');
+        var chip = el('span', 'chip ' + st.cls);
+        var glyph = el('span', 'glyph', st.glyph);
+        glyph.setAttribute('aria-hidden', 'true');
+        chip.appendChild(glyph);
+        chip.appendChild(document.createTextNode(st.label));
+        tdS.appendChild(chip);
+        if (v.status === 'AVAILABLE' && v.sellable > 0) {
+          tdS.appendChild(el('span', 'status-note', v.sellable + ' in stock'));
+        }
+        tr.appendChild(tdS);
+
+        // Prices — tier columns mute when they don't beat the single-kit
+        // price; the lowest tier that does beat it is the row's best price.
+        var p = v.prices || {};
+        var q1 = Number(p.q1), q2 = Number(p.q2), q20 = Number(p.q20);
+        // Lowest discounted tier wins; on a tie the smaller quantity does
+        // (the same price at 2+ beats "buy 20"). Missing tiers never block.
+        var bestIs = null;
+        if (!oos && isFinite(q1)) {
+          if (isFinite(q2) && q2 < q1) bestIs = 'q2';
+          if (isFinite(q20) && q20 < q1 && (bestIs === null || q20 < q2)) bestIs = 'q20';
+        }
+        tr.appendChild(priceCell('1 kit', p.q1, false, false, p.q1));
+        tr.appendChild(priceCell('2+ kits', p.q2, p.q2 === p.q1, bestIs === 'q2', p.q1));
+        tr.appendChild(priceCell('20+ kits', p.q20, p.q20 === p.q1, bestIs === 'q20', p.q1));
+
+        // COA
+        var tdC = el('td', 'coa');
+        tdC.setAttribute('data-label', 'COA');
+        if (v.coa && v.coa.url) {
+          var a = el('a', null, 'Batch ' + (v.coa.ref || ''));
+          a.href = v.coa.url;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          tdC.appendChild(a);
+        } else {
+          var none = el('span', 'none', '—');
+          none.setAttribute('aria-label', 'No certificate yet');
+          tdC.appendChild(none);
+        }
+        tr.appendChild(tdC);
+
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      section.appendChild(table);
+      frag.appendChild(section);
+    });
+
+    main.textContent = '';
+    if (!shown) {
+      frag.appendChild(el('p', 'empty', 'No products are listed right now — check back soon.'));
+    }
+    main.appendChild(frag);
+
+    // ---- Sticky group navigation: one chip per group, the one on screen lit ----
+    var nav = document.getElementById('groupnav');
+    var sections = Array.prototype.slice.call(main.querySelectorAll('section.group'));
+    if (nav && sections.length > 1) {
+      var inner = el('div', 'groupnav-inner');
+      var chips = sections.map(function (s) {
+        var a = el('a', 'gchip', s.querySelector('h2').textContent);
+        a.href = '#' + s.id;
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          s.classList.add('in');                     // never scroll to a group the reveal hasn't shown yet
+          var top = s.getBoundingClientRect().top + window.pageYOffset - nav.offsetHeight - 8;
+          try { window.scrollTo({ top: top, behavior: 'smooth' }); } catch (err) { window.scrollTo(0, top); }
+          if (history.pushState) history.pushState(null, '', '#' + s.id);
+          // Hand focus to the section so keyboard users continue from it.
+          s.setAttribute('tabindex', '-1');
+          try { s.focus({ preventScroll: true }); } catch (err) { /* ignore */ }
+        });
+        inner.appendChild(a);
+        return a;
+      });
+      nav.appendChild(inner);
+      document.documentElement.classList.add('has-nav');
+      // The sticky table headers sit under the nav: publish its measured
+      // height (fonts, zoom and wrapping all change it) as a CSS variable.
+      var publishNavHeight = function () {
+        document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+      };
+      publishNavHeight();
+      if (typeof ResizeObserver === 'function') new ResizeObserver(publishNavHeight).observe(nav);
+      else window.addEventListener('resize', publishNavHeight);
+
+      var currentIdx = -1;
+      var setCurrent = function (idx) {
+        if (idx === currentIdx) return;              // no work (and no chip scroll) while it doesn't change
+        currentIdx = idx;
+        chips.forEach(function (c, i) {
+          if (i === idx) c.setAttribute('aria-current', 'true');
+          else c.removeAttribute('aria-current');
+        });
+        // Keep the lit chip in view inside the strip only; never move the page.
+        var chip = chips[idx];
+        var left = chip.offsetLeft - inner.clientWidth / 2 + chip.offsetWidth / 2;
+        try { inner.scrollTo({ left: left, behavior: 'smooth' }); } catch (e) { inner.scrollLeft = left; }
+      };
+      var ticking = false;
+      var onScroll = function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          ticking = false;
+          var line = nav.offsetHeight + 24;
+          var idx = 0;
+          for (var i = 0; i < sections.length; i++) {
+            if (sections[i].getBoundingClientRect().top <= line) idx = i;
+          }
+          setCurrent(idx);
+        });
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // Deep links: the sections did not exist when the browser tried to
+      // honour #g-N, so do it now (and on later hash changes), under the nav.
+      var goToHash = function () {
+        var id = (location.hash || '').slice(1);
+        if (!id) return;
+        var target = document.getElementById(id);
+        if (!target || !target.classList.contains('group')) return;
+        target.classList.add('in');
+        var top = target.getBoundingClientRect().top + window.pageYOffset - nav.offsetHeight - 8;
+        window.scrollTo(0, top);
+        target.setAttribute('tabindex', '-1');
+        try { target.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
+      };
+      goToHash();
+      window.addEventListener('hashchange', goToHash);
+    }
+
+    // ---- Reveal: groups rise in as they enter the viewport ----
+    // Not in embed mode: inside a short Notion scroll box the observer's
+    // root is the iframe, and a group can sit just past what the box shows.
+    var reduced = false;
+    try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { /* ignore */ }
+    var embedded = document.documentElement.classList.contains('embed');
+    if (!reduced && !embedded && typeof IntersectionObserver === 'function' && sections.length) {
+      document.documentElement.classList.add('js-reveal');
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+      sections.forEach(function (s) { io.observe(s); });
+      // Anything already on screen (or a print started before scroll) must not wait.
+      setTimeout(function () {
+        sections.forEach(function (s) { if (s.getBoundingClientRect().top < window.innerHeight) s.classList.add('in'); });
+      }, 600);
+    }
+
+    var stamp = data.effectiveDate || '—';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-effective]'), function (n) {
+      n.textContent = stamp;
+    });
+
+    var printBtn = document.getElementById('print-btn');
+    if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
+  })();
+</script>
+
+<script id="hero-vs" type="x-shader/x-vertex">
+attribute vec2 a_pos;
+void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+</script>
+<script id="hero-fs" type="x-shader/x-fragment">
+precision mediump float;
+
+uniform vec2  u_res;       // drawing-buffer size (px)
+uniform float u_time;      // seconds
+uniform vec2  u_pointer;   // light position, drawing-buffer px, y up
+uniform sampler2D u_logo;
+uniform vec4  u_logoRect;  // x, y (bottom-left, y up), w, h in drawing-buffer px
+uniform vec2  u_texel;     // 1 / logo texture size
+
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
+}
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 3; i++) { v += a * noise(p); p = p * 2.03 + vec2(1.7, 9.2); a *= 0.5; }
+  return v;
+}
+// 4-stop gold ramp: #0a0a0b -> #8d4c1a -> #e09020 -> #fec620
+vec3 ramp(float t) {
+  vec3 c0 = vec3(0.039, 0.039, 0.043);
+  vec3 c1 = vec3(0.553, 0.298, 0.102);
+  vec3 c2 = vec3(0.878, 0.565, 0.125);
+  vec3 c3 = vec3(0.996, 0.776, 0.125);
+  t = clamp(t, 0.0, 1.0) * 3.0;
+  if (t < 1.0) return mix(c0, c1, t);
+  if (t < 2.0) return mix(c1, c2, t - 1.0);
+  return mix(c2, c3, t - 2.0);
+}
+float lum(vec3 c) { return dot(c, vec3(0.2126, 0.7152, 0.0722)); }
+
+void main() {
+  vec2 frag = gl_FragCoord.xy;
+  vec2 uv = frag / u_res;
+  float aspect = u_res.x / u_res.y;
+
+  // ---- liquid gold base: domain-warped fbm, slowed ----
+  vec2 p = vec2(uv.x * aspect, uv.y) * 1.5;
+  float t = u_time * 0.045;
+  vec2 q = vec2(fbm(p + t * 0.7), fbm(p + vec2(5.2, 1.3) - t * 0.5));
+  float f = fbm(p + 1.8 * q + vec2(t * 0.3, -t * 0.2));
+  float k = pow(f, 2.0) * 1.15;                 // most of the field stays near the dark end
+  vec3 col = ramp(k);
+  float vig = smoothstep(0.0, 0.55, uv.y);       // fades to the page background at the bottom edge
+  vig *= 1.0 - 0.3 * pow(abs(uv.x - 0.5) * 2.0, 2.0);
+  col *= vig * 0.7;
+  float bl = lum(col);                           // luminance budget: text must stay readable
+  if (bl > 0.28) col *= 0.28 / bl;
+
+  // ---- gold dust: sparse specks that twinkle in place, brighter where the gold is ----
+  vec2 sp = vec2(uv.x * aspect, uv.y) * 42.0;
+  vec2 si = floor(sp);
+  vec2 sf = fract(sp) - 0.5 + (vec2(hash(si + 7.3), hash(si + 2.1)) - 0.5) * 0.6;
+  float sh = hash(si);
+  float twinkle = 0.55 + 0.45 * sin(u_time * (1.2 + sh * 2.5) + sh * 6.2832);
+  float speck = smoothstep(0.09, 0.0, length(sf)) * step(0.975, sh) * twinkle;
+  col += vec3(0.996, 0.85, 0.35) * speck * (0.35 + 0.65 * k) * vig;
+
+  // ---- 2.5D foil pass over the logo ----
+  vec2 luv = (frag - u_logoRect.xy) / u_logoRect.zw;
+  if (luv.x >= 0.0 && luv.x <= 1.0 && luv.y >= 0.0 && luv.y <= 1.0) {
+    vec2 tuv = vec2(luv.x, 1.0 - luv.y);          // texture row 0 is the top of the image
+    vec3 lc = texture2D(u_logo, tuv).rgb;
+    float lm = lum(lc);
+    // Black-background PNG: luminance stands in for alpha.
+    float mask = smoothstep(0.06, 0.18, lm);
+    float hL = lum(texture2D(u_logo, tuv - vec2(u_texel.x, 0.0)).rgb);
+    float hR = lum(texture2D(u_logo, tuv + vec2(u_texel.x, 0.0)).rgb);
+    float hT = lum(texture2D(u_logo, tuv - vec2(0.0, u_texel.y)).rgb);
+    float hB = lum(texture2D(u_logo, tuv + vec2(0.0, u_texel.y)).rgb);
+    vec3 n = normalize(vec3((hL - hR) * 3.0, (hB - hT) * 3.0, 1.0));
+
+    vec3 L = normalize(vec3(u_pointer, 220.0) - vec3(frag, 0.0));
+    vec3 V = vec3(0.0, 0.0, 1.0);
+    vec3 H = normalize(L + V);
+    float diff = max(dot(n, L), 0.0);
+    float spec = pow(max(dot(n, H), 0.0), 48.0);
+
+    // thin diagonal sheen band sweeping across the mark
+    float band = fract(luv.x * 0.8 + luv.y * 0.35 - u_time * 0.07);
+    float sheen = smoothstep(0.45, 0.5, band) * (1.0 - smoothstep(0.5, 0.55, band));
+
+    vec3 tint = vec3(0.992, 0.945, 0.506);        // #fdf181
+    vec3 foil = lc * (0.72 + 0.38 * diff) + tint * (spec * 0.85 + sheen * 0.22);
+    col = mix(col, foil, mask);
+  }
+  gl_FragColor = vec4(col, 1.0);
+}
+</script>
+<script>
+  // ---------- WebGL hero: raw WebGL1, no dependencies ----------
+  (function () {
+    var root = document.documentElement;
+    var hero = document.querySelector('.hero');
+    var canvas = document.getElementById('hero-gl');
+    var img = document.querySelector('.hero-logo');
+    if (!hero || !canvas || !img) return;
+
+    function fallback(reason) {
+      if (reason) console.warn('[hero-gl] falling back to static hero: ' + reason);
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      root.classList.remove('gl-on');
+      root.classList.add('gl-off');
+    }
+
+    var gl = null;
+    try {
+      gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' })
+        || canvas.getContext('experimental-webgl', { alpha: false });
+    } catch (e) { gl = null; }
+    if (!gl) return fallback('WebGL context unavailable');
+
+    function compile(type, src, label) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, src);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        console.error('[hero-gl] ' + label + ' shader failed to compile:\n' + gl.getShaderInfoLog(s));
+        gl.deleteShader(s);
+        return null;
+      }
+      return s;
+    }
+    var vs = compile(gl.VERTEX_SHADER, document.getElementById('hero-vs').textContent, 'vertex');
+    var fs = compile(gl.FRAGMENT_SHADER, document.getElementById('hero-fs').textContent, 'fragment');
+    if (!vs || !fs) return fallback('shader compile error');
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      console.error('[hero-gl] program link failed:\n' + gl.getProgramInfoLog(prog));
+      return fallback('program link error');
+    }
+    gl.useProgram(prog);
+
+    // One full-screen triangle.
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    var U = {};
+    ['u_res', 'u_time', 'u_pointer', 'u_logo', 'u_logoRect', 'u_texel'].forEach(function (n) {
+      U[n] = gl.getUniformLocation(prog, n);
+    });
+
+    var DPR = Math.min(1.5, window.devicePixelRatio || 1);
+    var FRAME_MS = 1000 / 30;
+    var reduced = false, coarse = false;
+    try {
+      reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      coarse = window.matchMedia('(hover: none)').matches;
+    } catch (e) { /* ignore */ }
+
+    var running = false, inView = true, raf = 0, last = 0, t0 = 0;
+    var logoRect = [0, 0, 1, 1];
+    var pointer = { x: 0, y: 0 }, target = { x: 0, y: 0 }, hasPointer = false;
+    var texture = null;
+
+    function resize() {
+      var r = hero.getBoundingClientRect();
+      var w = Math.max(1, Math.round(r.width * DPR));
+      var h = Math.max(1, Math.round(r.height * DPR));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+      gl.viewport(0, 0, w, h);
+      var ir = img.getBoundingClientRect();
+      var x = (ir.left - r.left) * DPR;
+      var top = (ir.top - r.top) * DPR;
+      var lw = Math.max(1, ir.width * DPR), lh = Math.max(1, ir.height * DPR);
+      logoRect = [x, h - (top + lh), lw, lh];
+      if (!hasPointer) {
+        pointer.x = target.x = x + lw * 0.35;
+        pointer.y = target.y = h - (top + lh * 0.4);
+      }
+      if (reduced && texture) draw(performance.now());
+    }
+
+    function orbit(now) {
+      var a = (now - t0) / 1000 * 0.35;
+      var cx = logoRect[0] + logoRect[2] * 0.5, cy = logoRect[1] + logoRect[3] * 0.5;
+      target.x = cx + Math.cos(a) * logoRect[2] * 0.55;
+      target.y = cy + Math.sin(a * 0.8) * logoRect[3] * 0.9;
+    }
+
+    function draw(now) {
+      if (!hasPointer || coarse) orbit(now);
+      pointer.x += (target.x - pointer.x) * 0.06;
+      pointer.y += (target.y - pointer.y) * 0.06;
+      gl.uniform2f(U.u_res, canvas.width, canvas.height);
+      gl.uniform1f(U.u_time, (now - t0) / 1000);
+      gl.uniform2f(U.u_pointer, pointer.x, pointer.y);
+      gl.uniform4f(U.u_logoRect, logoRect[0], logoRect[1], logoRect[2], logoRect[3]);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+
+    function frame(now) {
+      raf = 0;
+      if (!running) return;
+      if (now - last >= FRAME_MS) { last = now; draw(now); }
+      raf = requestAnimationFrame(frame);
+    }
+
+    function setRunning() {
+      if (reduced) {
+        // Static frame only — but repaint it when the tab/hero comes back,
+        // since a hidden canvas's backing store may have been discarded.
+        if (texture && inView && !document.hidden) draw(performance.now());
+        return;
+      }
+      var should = inView && !document.hidden && !!texture;
+      if (should && !running) {
+        running = true; last = 0;
+        raf = requestAnimationFrame(frame);
+      } else if (!should && running) {
+        running = false;
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    }
+
+    function start() {
+      try {
+        texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        // Non-power-of-two texture: clamp + linear, no mipmaps (WebGL1 rule).
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.uniform1i(U.u_logo, 0);
+        gl.uniform2f(U.u_texel, 1 / img.naturalWidth, 1 / img.naturalHeight);
+      } catch (e) {
+        texture = null;
+        return fallback('logo texture upload failed (' + (e && e.message ? e.message : e) + ')');
+      }
+      root.classList.add('gl-on');
+      t0 = performance.now();
+      resize();
+      if (reduced) { draw(performance.now()); return; }   // one static frame, then stop
+      setRunning();
+    }
+
+    // Pointer: ease toward the real cursor; touch/no-hover devices auto-orbit.
+    hero.addEventListener('pointermove', function (e) {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      hasPointer = true;
+      var r = hero.getBoundingClientRect();
+      target.x = (e.clientX - r.left) * DPR;
+      target.y = canvas.height - (e.clientY - r.top) * DPR;
+    }, { passive: true });
+    hero.addEventListener('pointerleave', function () { hasPointer = false; });
+
+    if (typeof ResizeObserver === 'function') {
+      new ResizeObserver(function () { resize(); }).observe(hero);
+    } else {
+      window.addEventListener('resize', resize);
+    }
+    document.addEventListener('visibilitychange', setRunning);
+    if (typeof IntersectionObserver === 'function') {
+      new IntersectionObserver(function (entries) {
+        inView = entries.some(function (en) { return en.isIntersecting; });
+        setRunning();
+      }, { threshold: 0 }).observe(hero);
+    }
+    canvas.addEventListener('webglcontextlost', function (e) {
+      e.preventDefault();
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+      fallback('WebGL context lost');
+    });
+
+    if (img.complete && img.naturalWidth > 0) start();
+    else if (img.complete) fallback('logo image failed to load');
+    else {
+      img.addEventListener('load', start, { once: true });
+      img.addEventListener('error', function () { fallback('logo image failed to load'); }, { once: true });
+    }
+  })();
+</script>
+</body>
+</html>

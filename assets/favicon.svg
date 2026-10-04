@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#8d4c1a"/>
+      <stop offset=".3" stop-color="#c07028"/>
+      <stop offset=".6" stop-color="#f09818"/>
+      <stop offset=".85" stop-color="#fec620"/>
+      <stop offset="1" stop-color="#fdf181"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0a0a0b"/>
+  <!-- P stem + bowl -->
+  <path fill="url(#g)" fill-rule="evenodd"
+        d="M16 10h20c9.4 0 17 6.7 17 15.5S45.4 41 36 41h-9v13h-11V10zm11 9v13h9c4 0 6.5-3 6.5-6.5S40 19 36 19h-9z"/>
+  <!-- small "2" tucked into the bowl, as on the wordmark -->
+  <path fill="#0a0a0b" d="M31.5 30.5h4.2c1 0 1.6-.5 1.6-1.2s-.6-1.2-1.6-1.2h-4.2v-2.4h4.4c2.6 0 4.2 1.4 4.2 3.5 0 1.6-.9 2.7-2.4 3.2l2.9 3.3h-3.2l-2.6-3H31.5v-2.2z"/>
+</svg>
