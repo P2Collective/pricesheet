@@ -231,6 +231,10 @@
     color: var(--muted);
   }
   tr.oos td.price, tr.oos th.spec, tr.oos td.price.best { color: var(--muted); font-size: inherit; font-weight: 400; }
+  td.tested { white-space: nowrap; }
+  .tested-mg { font-variant-numeric: tabular-nums; font-weight: 500; }
+  .tested-note { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+  td.tested .none { color: var(--muted); }
   td.coa a { text-decoration: none; border-bottom: 1px solid rgba(233,181,48,.35); }
   td.coa a:hover { border-bottom-color: var(--gold-bright); }
   td.coa .none { color: var(--muted); }
@@ -318,6 +322,7 @@
       letter-spacing: .12em; text-transform: uppercase; color: var(--muted); text-align: left;
     }
     .status-note { display: inline; margin: 0 0 0 8px; }
+    .tested-note { display: inline; margin: 0 0 0 8px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -390,7 +395,7 @@
   <span class="foot-brand" aria-hidden="true"><span class="p2">P²</span>Collective</span>
 </footer>
 
-<script id="pricesheet-data" type="application/json">{"generatedAt":"2026-10-04T17:09:37.283Z","effectiveDate":"October 4, 2026, 12:09 PM CT","promoLabel":"Promo","showOutOfStock":true,"groups":[{"name":"5 AMINO 1MQ ","note":"","variants":[{"spec":"50x10 vials","status":"AVAILABLE","prices":{"q1":70,"q2":60,"q20":60},"coa":{"ref":"P250AM-1026","url":"https://accumarklabs.com/accuverify/?accuverify_code=N2PT-357N"},"promo":false,"sellable":8,"moq":0}]},{"name":"GHK-CU","note":"","variants":[{"spec":"10 vials","status":"AVAILABLE","prices":{"q1":60,"q2":60,"q20":60},"coa":{"ref":"MB5-CU100","url":"https://accumarklabs.com/accuverify/?accuverify_code=B9YV-AWM7"},"promo":false,"sellable":60,"moq":0}]},{"name":"KPV","note":"","variants":[{"spec":"10 vials","status":"AVAILABLE","prices":{"q1":115,"q2":115,"q20":115},"coa":{"ref":"KPV30-0726","url":"https://accumarklabs.com/accuverify/?accuverify_code=52NV-2ELL"},"promo":false,"sellable":93,"moq":0}]},{"name":"T10","note":"","variants":[{"spec":"10 vials","status":"AVAILABLE","prices":{"q1":50,"q2":50,"q20":50},"coa":null,"promo":false,"sellable":89,"moq":0}]}]}</script>
+<script id="pricesheet-data" type="application/json">{"generatedAt":"2026-10-04T17:39:18.608Z","effectiveDate":"October 4, 2026, 12:39 PM CT","promoLabel":"Promo","showOutOfStock":true,"groups":[{"name":"5-AMINO-1MQ","note":"","variants":[{"spec":"50mg","listedMg":50,"testedMg":null,"status":"AVAILABLE","prices":{"q1":70,"q2":60,"q20":60},"coa":{"ref":"P250AM-1026","url":"https://accumarklabs.com/accuverify/?accuverify_code=N2PT-357N"},"promo":false,"sellable":8,"moq":0}]},{"name":"GHK-CU","note":"","variants":[{"spec":"100 mg × 10 vials","listedMg":100,"testedMg":112,"status":"AVAILABLE","prices":{"q1":60,"q2":60,"q20":60},"coa":{"ref":"MB5-CU100","url":"https://accumarklabs.com/accuverify/?accuverify_code=B9YV-AWM7"},"promo":false,"sellable":60,"moq":0}]},{"name":"KPV","note":"","variants":[{"spec":"30 mg × 10 vials","listedMg":30,"testedMg":30,"status":"AVAILABLE","prices":{"q1":115,"q2":115,"q20":115},"coa":{"ref":"KPV30-0726","url":"https://accumarklabs.com/accuverify/?accuverify_code=52NV-2ELL"},"promo":false,"sellable":93,"moq":0}]},{"name":"TIRZEPATIDE","note":"","variants":[{"spec":"10 mg × 10 vials","listedMg":10,"testedMg":null,"status":"AVAILABLE","prices":{"q1":50,"q2":50,"q20":50},"coa":null,"promo":false,"sellable":89,"moq":0}]}]}</script>
 
 <script>
   // ---------- Sheet renderer (vanilla, no dependencies) ----------
@@ -412,7 +417,8 @@
       'IN TRANSIT':    { cls: 'chip-transit',    glyph: '➤', label: 'In transit' },
       'OUT OF STOCK':  { cls: 'chip-oos',        glyph: '○', label: 'Coming soon' }
     };
-    var COLS = ['Spec', 'Status', '1 kit', '2+ kits', '20+ kits', 'COA'];
+    var COLS = ['Spec', 'Tested', 'Status', '1 kit', '2+ kits', '20+ kits', 'COA'];
+    function fmtMg(n) { n = Number(n); return Number.isInteger(n) ? String(n) : String(Number(n.toFixed(2))); }
 
     function el(tag, cls, text) {
       var n = document.createElement(tag);
@@ -464,7 +470,7 @@
       var thead = el('thead');
       var hr = el('tr');
       COLS.forEach(function (c, i) {
-        var th = el('th', i >= 2 && i <= 4 ? 'num' : null, c);
+        var th = el('th', i >= 3 && i <= 5 ? 'num' : null, c);
         th.setAttribute('scope', 'col');
         hr.appendChild(th);
       });
@@ -486,6 +492,21 @@
         if (v.moq > 1) inner.appendChild(el('span', 'pill', 'MOQ ' + v.moq));
         th.appendChild(inner);
         tr.appendChild(th);
+
+        // Tested mass: what the COA batch actually measured, against the label.
+        var tdT = el('td', 'tested');
+        tdT.setAttribute('data-label', 'Tested (COA)');
+        if (v.testedMg != null && isFinite(Number(v.testedMg))) {
+          tdT.appendChild(el('span', 'tested-mg', fmtMg(v.testedMg) + ' mg'));
+          if (v.listedMg != null && Number(v.listedMg) > 0) {
+            tdT.appendChild(el('span', 'tested-note', Math.round(Number(v.testedMg) / Number(v.listedMg) * 100) + '% of listed'));
+          }
+        } else {
+          var noT = el('span', 'none', '\u2014');
+          noT.setAttribute('aria-label', 'No tested mass on file');
+          tdT.appendChild(noT);
+        }
+        tr.appendChild(tdT);
 
         // Status chip (glyph + text — never color alone)
         var tdS = el('td', 'status');
